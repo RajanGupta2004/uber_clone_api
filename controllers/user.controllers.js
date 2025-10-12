@@ -31,3 +31,43 @@ export const RegiterUser = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const Login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "All field are required" });
+    }
+
+    const user = await User.findOne({ email: email }).select("+password");
+
+    console.log("user", user);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "email and password not match..." });
+    }
+
+    const comparePassword = await User.comparePassword(password, user.password);
+
+    console.log("comparePassword", comparePassword);
+
+    if (!comparePassword) {
+      return res.status(401).json({ message: "email and password not match" });
+    }
+
+    const token = user.generateJwtToken();
+
+    console.log("token", token);
+
+    return res.status(201).json({
+      success: true,
+      data: { token, user },
+    });
+  } catch (error) {
+    console.log("error in login", error);
+    return res.status(500).json({ message: "Internal server error " });
+  }
+};

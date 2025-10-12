@@ -35,8 +35,11 @@ userSchema.methods.generateJwtToken = function () {
   });
 };
 
-userSchema.statics.comparePassword = async function (password) {
-  return await bcrypt.compare(password, this.password);
+userSchema.statics.comparePassword = async function (
+  enteredPassword,
+  hashedPassword
+) {
+  return await bcrypt.compare(enteredPassword, hashedPassword);
 };
 
 userSchema.statics.hashPassword = async function (password) {
