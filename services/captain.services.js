@@ -42,7 +42,7 @@ export const createCaptain = async ({
 };
 
 export const findCaptainByEmail = async (email) => {
-  return Captain.findOne({ email });
+  return Captain.findOne({ email }).select("+password");
 };
 
 export const generateJwtToken = async (payload) => {

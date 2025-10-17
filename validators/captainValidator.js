@@ -43,3 +43,17 @@ export const captainRegisterValidator = [
     .isString()
     .withMessage("vehicleType be in  string"),
 ];
+
+export const captainLoginValidator = [
+  body("email")
+    .isEmail()
+    .withMessage("In valid email")
+    .notEmpty()
+    .withMessage("email required"),
+
+  body("password")
+    .notEmpty()
+    .withMessage("Passord must be required")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters long"),
+];

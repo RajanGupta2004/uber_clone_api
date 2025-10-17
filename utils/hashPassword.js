@@ -7,3 +7,16 @@ export const hashPassword = (password) => {
     console.log("error", error);
   }
 };
+
+export const comparePassword = async (enteredPassword, hashedPassword) => {
+  console.log(
+    "enteredPassword, hashedPassword",
+    enteredPassword,
+    hashedPassword
+  );
+  try {
+    return await bcrypt.compare(enteredPassword, hashedPassword);
+  } catch (error) {
+    console.log("error", error);
+  }
+};

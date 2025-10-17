@@ -3,25 +3,14 @@ import {
   findCaptainByEmail,
   generateJwtToken,
 } from "../services/captain.services.js";
-import { hashPassword } from "../utils/hashPassword.js";
+import { comparePassword, hashPassword } from "../utils/hashPassword.js";
 
 export const registerCaptain = async (req, res) => {
-  const { fullName, email, password, vehicle, location } = req.body;
+  const { fullName, email, password, vehicle } = req.body;
 
-  console.log(fullName, email, password, vehicle, location);
-
-  // if (
-  //   !firstName ||
-  //   !lastName ||
-  //   !email ||
-  //   !password ||
-  //   !color ||
-  //   !plate ||
-  //   !vehicleType ||
-  //   !capacity
-  // ) {
-  //   return res.status(400).json({ message: "All field are required...." });
-  // }
+  if ((!fullName, !email || !password || !vehicle)) {
+    return res.status(400).json({ message: "All field are required...." });
+  }
   try {
     const isCaptainExist = await findCaptainByEmail(email);
 
@@ -49,6 +38,39 @@ export const registerCaptain = async (req, res) => {
     res.cookie("token", token);
 
     return res.status(201).json({ message: "captain created", token });
+  } catch (error) {
+    console.log("Error", error);
+    return res.status(200).json({ message: "Internal server error" });
+  }
+};
+
+export const loginCaptain = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "All filed are required...." });
+  }
+
+  try {
+    const captain = await findCaptainByEmail(email);
+
+    if (!captain) {
+      return res
+        .status(400)
+        .json({ message: "captain already doest not exist with this email" });
+    }
+
+    const isPasswordCorrect = await comparePassword(password, captain.password);
+
+    if (!isPasswordCorrect) {
+      return res.status(401).json({ message: "Unauthorised" });
+    }
+
+    const token = await generateJwtToken({ id: captain._id });
+
+    res.cookie("token", token);
+
+    return res.status(200).json({ message: "successfull", token });
   } catch (error) {
     console.log("Error", error);
     return res.status(200).json({ message: "Internal server error" });
