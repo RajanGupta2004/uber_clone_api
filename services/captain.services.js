@@ -45,6 +45,10 @@ export const findCaptainByEmail = async (email) => {
   return Captain.findOne({ email }).select("+password");
 };
 
+export const findCaptainById = async (captainId) => {
+  return Captain.findById(captainId);
+};
+
 export const generateJwtToken = async (payload) => {
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "24h" });
 };

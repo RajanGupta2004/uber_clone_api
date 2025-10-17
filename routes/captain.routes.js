@@ -6,6 +6,7 @@ import {
   captainRegisterValidator,
 } from "../validators/captainValidator.js";
 import validateRequest from "../middleware/validateRequest.middleware.js";
+import { authCaptain } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
@@ -22,5 +23,7 @@ router.post(
   validateRequest,
   captainControllers.loginCaptain
 );
+
+router.get("/profile", authCaptain, captainControllers.captainProfile);
 
 export default router;

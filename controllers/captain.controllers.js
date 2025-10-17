@@ -1,6 +1,8 @@
+import Captain from "../models/captain.model.js";
 import {
   createCaptain,
   findCaptainByEmail,
+  findCaptainById,
   generateJwtToken,
 } from "../services/captain.services.js";
 import { comparePassword, hashPassword } from "../utils/hashPassword.js";
@@ -74,5 +76,23 @@ export const loginCaptain = async (req, res) => {
   } catch (error) {
     console.log("Error", error);
     return res.status(200).json({ message: "Internal server error" });
+  }
+};
+
+export const captainProfile = async (req, res) => {
+  try {
+    const captainId = req.captain.id;
+
+    const captain = await findCaptainById(captainId);
+
+    if (!captain) {
+      return res.status(404).json({ message: "Captain not found" });
+    }
+
+    return res.status(200).json({ captain });
+  } catch (error) {
+    console.log("error", error);
+
+    return res.status(500).json({ message: "Internal server error " });
   }
 };
