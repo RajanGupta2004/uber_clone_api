@@ -1,4 +1,4 @@
-import Captain from "../models/captain.model.js";
+import BackListToken from "../models/backListToken.model.js";
 import {
   createCaptain,
   findCaptainByEmail,
@@ -90,6 +90,20 @@ export const captainProfile = async (req, res) => {
     }
 
     return res.status(200).json({ captain });
+  } catch (error) {
+    console.log("error", error);
+
+    return res.status(500).json({ message: "Internal server error " });
+  }
+};
+
+export const captainLogOut = async (req, res) => {
+  const token = req.cookies?.token || req.headers?.authorization?.split(" ")[1];
+  try {
+    await BackListToken.create({ token });
+    res.clearCookie();
+
+    return res.status(200).json({ message: "captain logout" });
   } catch (error) {
     console.log("error", error);
 
